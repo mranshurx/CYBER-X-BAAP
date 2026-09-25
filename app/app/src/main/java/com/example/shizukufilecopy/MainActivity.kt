@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
     private val SHIZUKU_PERMISSION_REQUEST_CODE = 1001
 
-    private val shizukuPermissionListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+    private val shizukuPermissionListener = Shizuku.OnRequestPermissionResultListener { requestCode: Int, grantResult: Int ->
         if (requestCode == SHIZUKU_PERMISSION_REQUEST_CODE) {
             if (grantResult == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Shizuku Permission Granted!", Toast.LENGTH_SHORT).show()
@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Register listener for Shizuku permission response
         Shizuku.addRequestPermissionResultListener(shizukuPermissionListener)
 
         val btnCopy = findViewById<Button>(R.id.btnCopyFile)
@@ -50,27 +49,22 @@ class MainActivity : AppCompatActivity() {
         if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
             copyFileToAndroidData()
         } else {
-            // Request permission from user via popup
             Shizuku.requestPermission(SHIZUKU_PERMISSION_REQUEST_CODE)
         }
     }
 
     private fun copyFileToAndroidData() {
         try {
-            // Example: Make a dummy local file in app cache to test copying
             val sourceFile = File(cacheDir, "test_file.txt")
             sourceFile.writeText("Hello from Shizuku file copier!")
 
-            // Target path inside restricted Android/data folder
             val targetDir = "/storage/emulated/0/Android/data/com.example.targetgame/files/"
             
-            // Ensure target directory exists via shell command
             val mkDirProcess = Shizuku.newProcess(arrayOf("mkdir", "-p", targetDir), null, null)
             mkDirProcess.waitFor()
 
             val targetFilePath = "$targetDir/test_file.txt"
 
-            // Execute shell copy command using Shizuku privileges
             val copyProcess = Shizuku.newProcess(arrayOf("cp", sourceFile.absolutePath, targetFilePath), null, null)
             val exitCode = copyProcess.waitFor()
 
