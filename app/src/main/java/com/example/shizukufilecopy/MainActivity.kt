@@ -5,20 +5,23 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import rikkax.shizuku.Shizuku
+import rikka.shizuku.Shizuku
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
     private val SHIZUKU_PERMISSION_REQUEST_CODE = 1001
 
-    private val shizukuPermissionListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
-        if (requestCode == SHIZUKU_PERMISSION_REQUEST_CODE) {
-            if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Shizuku Permission Granted!", Toast.LENGTH_SHORT).show()
-                copyFileToAndroidData()
-            } else {
-                Toast.makeText(this, "Shizuku Permission Denied", Toast.LENGTH_SHORT).show()
+    // Explicit object implementation to prevent Kotlin type-inference errors
+    private val shizukuPermissionListener = object : Shizuku.OnRequestPermissionResultListener {
+        override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
+            if (requestCode == SHIZUKU_PERMISSION_REQUEST_CODE) {
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this@MainActivity, "Shizuku Permission Granted!", Toast.LENGTH_SHORT).show()
+                    copyFileToAndroidData()
+                } else {
+                    Toast.makeText(this@MainActivity, "Shizuku Permission Denied", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
