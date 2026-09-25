@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import rikkax.shizuku.Shizuku
+import rikka.shizuku.Shizuku
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
